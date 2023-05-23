@@ -1,0 +1,9 @@
+streamlit==1.17.0
+psycopg2==2.9.5
+streamlit-extras
+streamlit-card
+openpyxl==3.1.1
+streamlit-authenticator
+streamlit-aggrid
+pyecharts streamlit_echarts
+plotly
