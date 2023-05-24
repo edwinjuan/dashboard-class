@@ -10,16 +10,16 @@ import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
 # Hide setting menu
-hide_menu = """
-<style>
-#MainMenu {
-    visibility:hidden;
-}
-footer{
-    visibility:hidden;
-}
-</style>
-"""
+# hide_menu = """
+# <style>
+# #MainMenu {
+#     visibility:hidden;
+# }
+# footer{
+#     visibility:hidden;
+# }
+# </style>
+# """
 
 if 'token' not in st.session_state:
     st.session_state['token'] = None
@@ -27,7 +27,7 @@ if 'token' not in st.session_state:
 def main():
      # ---- Preparing data Streamlit Login ---- 
     baseURL = 'http://127.0.0.1:8000/api'
-    st.markdown(hide_menu, unsafe_allow_html=True)
+    #st.markdown(hide_menu, unsafe_allow_html=True)
     # users = database_func.get_all_user()
     response = requests.get(baseURL + '/users')
 
