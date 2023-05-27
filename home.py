@@ -429,7 +429,7 @@ def main():
             df_grade_cluster.rename(columns = {'npm':'NPM'}, inplace = True)
             # Plotting Scatter plot
             parallel_plot = alt.Chart(df_grade_cluster).mark_circle(size=50).encode(
-                x=alt.X('NPM:O', axis=alt.Axis(labels=True)),
+                x=alt.X('NPM:O', axis=alt.Axis(labels=False)),
                 color=alt.Color('Cluster:N', scale=color_scale),
                 detail='Cluster:N',
                 y=alt.Y(alt.repeat("column"), type='quantitative')
