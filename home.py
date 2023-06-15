@@ -227,7 +227,7 @@ def main():
                         </div>
                         <div style="flex-basis: 66.67%; margin-left: 20px"">
                             <h3 style="text-align: left; color: white; font-size: 20px;  margin-top: 0px;">Assignment Done</h3>
-                            <h3 style="text-align: left; color: white; font-size: 50px;  margin-top: -20px; margin-bottom: 0px;">{assign_percent}%</h3>
+                            <h3 style="text-align: left; color: white; font-size: 50px;  margin-top: -20px; margin-bottom: 0px;">{assign_percent:.1f}%</h3>
                         </div>
                     </div>
                     """,
@@ -288,7 +288,7 @@ def main():
 
                 colHeadCpmk, colFilterCpmk = st.columns([3,2])
                 colHeadCpmk.markdown('###')
-                colHeadCpmk.subheader('CPMK Grade')
+                
                 cols = st.columns(df_cpmk.shape[0])
                 col1, col2 = st.columns([3,2])
                 col3, col4 = st.columns([3,2])
@@ -548,6 +548,8 @@ def main():
                 listCPMKFilter = ["{}-{}".format(str(x['npm']), str(x['name'])) for i,x in df_student_name.iterrows()]
                 listCPMKFilter.insert(0, 'Average Class')
                 selected_cpmk_filter = colFilterCpmk.selectbox('Student Filter', options=listCPMKFilter) 
+                # Give Tittle
+                colHeadCpmk.subheader('CPMK Grade ' + selected_cpmk_filter)
                 # Preparing data
                 df_data = df_cpmk.copy()
                 df_data['average'] = 0
