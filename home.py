@@ -69,10 +69,10 @@ def main():
     elif authentication_status == None:
         st.warning('Please enter your username and password')
     elif authentication_status:
-        col1, col2 = st.columns([8, 2])
+        col1, col2, col3 = st.columns([6, 2, 2])
         with col1:
             st.header("Performance Class Dashboard")
-        with col2:
+        with col3:
             st.markdown('###')
             authenticator.logout('Logout', 'main') 
         # Filter kelas
@@ -114,7 +114,7 @@ def main():
                 df['assignment_cpmk_list'] = df['assignment_cpmk_list'].apply(changeListStringToListInt)
                 
                 #Nanti dihapus
-                # st.dataframe(df)
+                #st.dataframe(df)
                 #st.dataframe(df_asign)
                 #st.dataframe(df_cpmk)
 
@@ -138,7 +138,9 @@ def main():
                     colTotName = "average {}".format(col)
                     colCountName = "count {}".format(col)
                     df_total_grouped_sum[colCountName] = df_total_grouped_count[col]
-                    df_total_grouped_sum[colTotName] = df_total_grouped_sum[col] / df_total_grouped_count[col]
+                    # Change the all count into the highest to make sure fairness of calculation
+                    df_total_grouped_sum[colCountName] = df_total_grouped_sum[colCountName].max()
+                    df_total_grouped_sum[colTotName] = df_total_grouped_sum[col] / df_total_grouped_sum[colCountName]
                     # calculate final weighted grade
                     colWeightName = "weighted {}".format(col)
                     percent = df_cpmk[df_cpmk['cpmk_id'] == int(col)]['percentage'].values[0]
@@ -155,6 +157,41 @@ def main():
                 # sort data
                 df_grade_total = df_total_grouped_sum.sort_values(by=['final'], ascending=False)
 
+                # Add download data CSV button
+                df_csv = df_grade_total.copy()
+                df_csv_cpmk = df_cpmk.copy()
+                # Give number to CPMK
+                df_csv_cpmk['number'] = ['CPMK {}'.format(i) for i in range(1, len(df_csv_cpmk)+1)]
+                # adjust data
+                for col in list_cpmk_col:
+                    df_csv = df_csv.drop(col, axis=1)
+                    df_csv = df_csv.drop('count {}'.format(col), axis=1)
+                    avg_name = 'average {}'.format(col)
+                    weight_name = 'weighted {}'.format(col)
+                    df_csv[avg_name] = df_csv[avg_name].round(2)
+                    df_csv[weight_name] = df_csv[weight_name].round(2)
+                    # Rename to CPMK number
+                    str_cpmk = df_csv_cpmk[df_csv_cpmk['cpmk_id'] == int(col)]['number'].values[0]
+                    new_avg_name = 'average {}'.format(str_cpmk)
+                    new_weight_name = 'weighted {}'.format(str_cpmk)
+                    df_csv.rename(columns = {avg_name:new_avg_name}, inplace = True)
+                    df_csv.rename(columns = {weight_name:new_weight_name}, inplace = True)
+
+                df_csv['final'] = df_csv['final'].round(2)
+                @st.cache
+                def convert_to_csv(df):
+                    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+                    return df.to_csv(index=False).encode('utf-8')
+
+                csv = convert_to_csv(df_csv)
+                with col2:
+                    st.markdown('###')
+                    download1 = st.download_button(
+                        label="Download data as CSV",
+                        data=csv,
+                        file_name='Grade.csv',
+                        mime='text/csv'
+                    )
 
 
                 # --- Show header metrics ---
